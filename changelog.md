@@ -1,5 +1,24 @@
 # Mineo Version History
 
+## Alpha 0.4.0
+*05/01/2021 20:24*
+- Added building
+  - Left click to remove, right click to place
+  - Shows a block selection outline
+  - Toggle by pressing B
+- Added the hotbar showing several available blocks
+  - Use number keys or scroll wheel to change the selected block
+- Added forest grass (ID 10), sandstone (ID 4) and sand (ID 12)
+- Added biomes: plains, forests (one per tree type) and desert
+  - Plains and desert generates no trees and forests generate their specific variant of tree
+- Re-added the nuke button (N) which destroys random blocks in a 5x5x5 area
+- Re-added the crosshair
+- Removed the workbench and quarry
+- Removed the hotbar
+- Removed tree IDs
+- Renamed grass to plains grass (ID 9)
+- Changed block IDs: stone 4>1, clay 5>2, grass 12>9, leaves 20/21/22>24/25/26, copper 24>32, asphalt 25>33, tin 26>34, debug 252>240
+
 ## Alpha 0.3.0
 *23/03/2019 17:23*
 - Added a workbench found inside the spawn building
