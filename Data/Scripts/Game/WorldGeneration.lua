@@ -2,7 +2,7 @@
 
 local debug = false
 
-local mapSize = 64
+mapSize = 64
 minXZ = -mapSize
 maxXZ = mapSize
 north = Map.BlockOrientation.North
@@ -18,17 +18,18 @@ blocks = {
     air = 255
 }
 
-local completedMap = false
+completedMap = false
 
 function Behavior:Start()
-if completedMap == false then
-    print("World generation start")
+if not completedMap then
+    print("World generation started")
     local map = self.gameObject:GetComponent("MapRenderer"):GetMap()
     
     local n = 0
 
-    local grassMax = 8
-    local grassY = math.randomrange(grassMax-2,grassMax)
+    local worldSmoothness = 4 -- higher = more smooth
+    local grassMax = 16
+    local grassY = worldType == 'normal' and math.randomrange(grassMax-2,grassMax) or grassMax
     local undergroundLvl = grassMax-4
     local grassChange = 1
     local chunkSize = 4
@@ -67,11 +68,14 @@ if completedMap == false then
                 end
             end
         
-            local grassChangeChance = math.random(0,2)
-            if grassChangeChance == 0 then
-                grassChange = math.random(-1,1)
+            -- chunk grass Y average level
+            if worldType == 'normal' then
+                local grassChangeChance = math.random(0,worldSmoothness)
+                if grassChangeChance == 0 then
+                    grassChange = math.random(-1,1)
+                end
+                grassY = math.round(math.randomrange(grassY+grassChange, grassMax))
             end
-            grassY = math.round(math.randomrange(grassY+grassChange, grassMax))
             
             for X=x, x+chunkSize, 1 do
                 for Z=z, z+chunkSize, 1 do
@@ -163,13 +167,14 @@ if completedMap == false then
                         map:SetBlockAt(x, maxTreeY+1, z, leafType, north)
                     end
 
-                    -- grass Y change
-                    local grassChngChance = math.random(-20,20)
-                    if grassChngChance == -1 then
-                        grassY = grassY - 1
+                    -- local grass Y change
+                    if worldType == 'normal' then
+                        local grassChangeChance = math.random(0, worldSmoothness*10)
+                        if grassChangeChance == 0 then
+                            grassY = grassY - 1
+                        elseif grassChangeChance == 1 then
+                            grassY = grassY + 1
                         end
-                        if grassChngChance == 1 then
-                        grassY = grassY + 1
                     end
                     
                 end
@@ -181,8 +186,10 @@ if completedMap == false then
     print("World generation done")
     
     -- ship
-    n = 16
-    while n < 24 do
+    local shipMinY = grassY+8
+    local shipMaxY = grassY+16
+    n = shipMinY
+    while n < shipMaxY do
         for X=-3,3,1 do for Z=-3,3,1 do
             map:SetBlockAt(X, n, Z, blocks.air, north)
         end end
@@ -190,8 +197,8 @@ if completedMap == false then
     end
     
     -- floor
-    n = 16
-    while n > 8 do
+    n = shipMinY
+    while n > shipMinY-8 do
         for X=-3,3,1 do for Z=-3,3,1 do
             map:SetBlockAt(X, n, Z, blocks.asphalt, north)
         end end 
@@ -216,8 +223,8 @@ if completedMap == false then
     end
     
     -- walls
-    n = 17
-    while n < 24 do
+    n = shipMinY+1
+    while n < shipMaxY do
         for X=-1,1,2 do
             for Z=-1,1,2 do
                 for X1=-3,3,1 do for Z1=-3,3,1 do
@@ -251,18 +258,18 @@ if completedMap == false then
     
     -- roof
     for X=-3,3,1 do for Z=-3,3,1 do
-        if math.random(0,1) == 0 then map:SetBlockAt(X, 24, Z, blocks.tin, north) end
+        if math.random(0,1) == 0 then map:SetBlockAt(X, shipMaxY, Z, blocks.tin, north) end
     end end
     for X=-1,1,2 do for Z=-1,1,2 do
-        if math.random(0,1) == 0 then map:SetBlockAt(6*X, 24, 0*Z, blocks.tin, north) end
-        if math.random(0,1) == 0 then map:SetBlockAt(6*X, 24, 1*Z, blocks.tin, north) end
-        if math.random(0,1) == 0 then map:SetBlockAt(5*X, 24, 2*Z, blocks.tin, north) end
-        if math.random(0,1) == 0 then map:SetBlockAt(4*X, 24, 2*Z, blocks.tin, north) end
-        if math.random(0,1) == 0 then map:SetBlockAt(3*X, 24, 3*Z, blocks.tin, north) end
-        if math.random(0,1) == 0 then map:SetBlockAt(2*X, 24, 4*Z, blocks.tin, north) end
-        if math.random(0,1) == 0 then map:SetBlockAt(2*X, 24, 5*Z, blocks.tin, north) end
-        if math.random(0,1) == 0 then map:SetBlockAt(1*X, 24, 6*Z, blocks.tin, north) end
-        if math.random(0,1) == 0 then map:SetBlockAt(0*X, 24, 6*Z, blocks.tin, north) end
+        if math.random(0,1) == 0 then map:SetBlockAt(6*X, shipMaxY, 0*Z, blocks.tin, north) end
+        if math.random(0,1) == 0 then map:SetBlockAt(6*X, shipMaxY, 1*Z, blocks.tin, north) end
+        if math.random(0,1) == 0 then map:SetBlockAt(5*X, shipMaxY, 2*Z, blocks.tin, north) end
+        if math.random(0,1) == 0 then map:SetBlockAt(4*X, shipMaxY, 2*Z, blocks.tin, north) end
+        if math.random(0,1) == 0 then map:SetBlockAt(3*X, shipMaxY, 3*Z, blocks.tin, north) end
+        if math.random(0,1) == 0 then map:SetBlockAt(2*X, shipMaxY, 4*Z, blocks.tin, north) end
+        if math.random(0,1) == 0 then map:SetBlockAt(2*X, shipMaxY, 5*Z, blocks.tin, north) end
+        if math.random(0,1) == 0 then map:SetBlockAt(1*X, shipMaxY, 6*Z, blocks.tin, north) end
+        if math.random(0,1) == 0 then map:SetBlockAt(0*X, shipMaxY, 6*Z, blocks.tin, north) end
     end end
     print("Ship generation done")
     end
@@ -270,7 +277,4 @@ if completedMap == false then
     print("Map complete")
     completedMap = true
 end
-end
-
-function Behavior:Update()
 end

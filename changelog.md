@@ -1,5 +1,14 @@
 # Mineo Version History
 
+## Alpha 0.4.1
+*06/01/2021 16:18*
+- Added flat worlds
+- Added a world type selection menu
+- Added a loading message when generating the terrain
+- Smoothened out the top level of the terrain
+- Made the block preview partially transparent
+- Improved building performance
+
 ## Alpha 0.4.0
 *05/01/2021 20:24*
 - Added building
@@ -42,7 +51,7 @@
 
 ## Alpha 0.2.1
 *10/03/2019 08:57*
-- Changed lock angle to 90 degrees up and down
+- Changed look angle to 90 degrees up and down
 - Added foundations to ship
 - Moved camera down half a block
 - Fixed trees and grass generating inside ship
