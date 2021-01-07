@@ -1,0 +1,22 @@
+- Scripts
+- Camera
+- Background
+  - Version
+  - Logo
+- LoadingBox
+  - LoadingText
+- Buttons
+  - Main
+    - PlayButton
+    - ExitButton
+  - Play
+    - LoadWorldButton
+    - NewWorldButton
+  - WorldSelect
+    - World1Button
+    - World2Button
+    - World3Button
+  - WorldType
+    - NormalWorldButton
+    - FlatWorldButton
+  - BackButton

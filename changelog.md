@@ -1,5 +1,13 @@
 # Mineo Version History
 
+## Alpha 0.4.2
+*07/01/2021 20:52*
+- Added a proper pause menu
+- Added level saving in three slots from the pause menu
+- Added level loading from the main menu
+- Added world seeds which control all aspects of world generation
+- Added snowy grass (`grass_snowy`, ID 11) which generates in spruce forests
+
 ## Alpha 0.4.1
 *06/01/2021 16:18*
 - Added flat worlds

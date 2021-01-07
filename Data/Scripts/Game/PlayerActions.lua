@@ -1,16 +1,15 @@
-hotbar = { -- blocks obj is in 'World generation'
+local hotbar = {
     blocks.stone, blocks.clay, blocks.dirt, blocks.grass, blocks.oak_log,
     blocks.oak_leaf, blocks.sand, blocks.tin, blocks.copper, blocks.asphalt
 }
-
-selectedBlock = blocks.stone
-currentSlot = 1
-showCoords = 1
-canBuild = true
-
+local selectedBlock = blocks.stone
+local currentSlot = 1
+local showF3 = false
+local canBuild = true
 local tick = 0
 
-function Behavior:Update()
+function Behavior:Update() 
+if ingame then
     tick = tick + 1
 
     local player = CS.FindGameObject("Player")
@@ -27,9 +26,7 @@ function Behavior:Update()
     local blockSelection = CS.FindGameObject("SelectedBlock")
     
     -- Toggle build
-    if CS.Input.WasButtonJustPressed("ToggleBuild") then
-        canBuild = not canBuild
-    end
+    if CS.Input.WasButtonJustPressed("ToggleBuild") then canBuild = not canBuild end
     
     -- Change item slot
     for i=1,10,1 do
@@ -60,45 +57,44 @@ function Behavior:Update()
     end
         
     -- Build
-    if CS.Input.IsButtonDown("RClick") and canBuild and tick > 10 then
-        if map:GetBlockIDAt(x,y,z) == blocks.air then
+    if CS.Input.IsButtonDown("RClick") and canBuild and tick > clickDelay then
+        if map:GetBlockIDAt(x,y-worldYOffset,z) == blocks.air then
             map:SetBlockAt(x,y-worldYOffset,z, selectedBlock, north)
+            placedBlocks[x .. '/' .. y-worldYOffset .. '/' .. z] = selectedBlock
             tick = 0
         end
     end    
-    if CS.Input.IsButtonDown("LClick") and canBuild and tick > 10 then
+    if CS.Input.IsButtonDown("LClick") and canBuild and tick > clickDelay then
         map:SetBlockAt(x,y-worldYOffset,z, blocks.air, north)
+        placedBlocks[x .. '/' .. y-worldYOffset .. '/' .. z] = blocks.air
         tick = 0
     end
    
     -- Nuke
     local nukeSize = 2 -- 5x5x5
-    if CS.Input.WasButtonJustPressed("Nuke") then
+    if CS.Input.WasButtonJustPressed("Nuke") and tick > clickDelay then
         for i=-nukeSize,nukeSize,1 do
             for j=-nukeSize,nukeSize,1 do
                 for k=-nukeSize,nukeSize,1 do
                     if math.randomrange(0,5) > 1 then
-                        map:SetBlockAt(x+i,y+j-worldYOffset,z+k, blocks.air, north)
+                        map:SetBlockAt(x+i, y+j-worldYOffset, z+k, blocks.air, north)
+                        placedBlocks[x+i .. '/' .. y+j-worldYOffset .. '/' .. z+k] = blocks.air
                     end
                 end
             end
         end
+        tick = 0
     end
     
-    -- Coords
+    -- F3
+    if CS.Input.WasButtonJustReleased("ToggleCoords") then showF3 = not showF3 end
     local posX = tostring(playerPos.y).format("%.1f", playerPos.x/2)
     local posY = tostring(playerPos.y).format("%.1f", playerPos.y/2-worldYOffset-0.25)
     local posZ = tostring(playerPos.y).format("%.1f", playerPos.z/2)
     local posText = posX .. ' / ' .. posY .. ' / ' .. posZ
 
-    if CS.Input.WasButtonJustReleased("ToggleCoords") then
-        showCoords = showCoords + 1
-    end
-    
-    if showCoords % 2 == 0 then
-        coords.textRenderer:SetText(posText)
-    else
-        coords.textRenderer:SetText('')
-    end
+    CS.FindGameObject("Version"):GetComponent("TextRenderer"):SetText(showF3 and version or '')
+    coords.textRenderer:SetText(showF3 and posText or '')
 
+end
 end

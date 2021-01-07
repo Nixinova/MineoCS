@@ -1,32 +1,20 @@
--- Map obj
-
 local debug = false
-
-mapSize = 64
-minXZ = -mapSize
-maxXZ = mapSize
-north = Map.BlockOrientation.North
-
-blocks = {
-    bedrock = 0, stone = 1, clay = 2, sandstone = 4,
-    dirt = 8, grass = 9, grass_plains = 9, grass_forest = 10, sand = 12,
-    log = 16, oak_log = 16, redwood_log = 17, spruce_log = 18,
-    leaf = 24, oak_leaf = 24, redwood_leaf = 25, spruce_leaf = 26,
-    copper = 32, asphalt = 33, tin = 34,
-    
-    debug = 240,
-    air = 255
-}
-
-completedMap = false
 
 function Behavior:Start()
 if not completedMap then
-    print("World generation started")
-    local map = self.gameObject:GetComponent("MapRenderer"):GetMap()
-    
-    local n = 0
+    if not worldSeed then
+        worldSeed = math.floor(math.randomrange(0, math.pow(2,31)))
+    end
 
+    print("World generation started")
+    print("Seed: " .. worldSeed)
+    math.randomseed(tonumber(worldSeed))
+    
+    local map = self.gameObject:GetComponent("MapRenderer"):GetMap()
+
+    local minXZ = -mapSize
+    local maxXZ = mapSize
+    
     local worldSmoothness = 4 -- higher = more smooth
     local grassMax = 16
     local grassY = worldType == 'normal' and math.randomrange(grassMax-2,grassMax) or grassMax
@@ -38,7 +26,6 @@ if not completedMap then
     
     -- biomes
     local biomes = {'oak_forest', 'spruce_forest', 'redwood_forest', 'desert'}
-    local biomeCoords = {}
     for i,v in ipairs(biomes) do
         local startX = math.random(minXZ, maxXZ)
         local startZ = math.random(minXZ, maxXZ)
@@ -85,8 +72,11 @@ if not completedMap then
                         if biome == 'plains' then
                             groundType = blocks.grass_plains
                             belowGroundType = blocks.dirt
-                        elseif string.find(biome,'forest') then
+                        elseif biome == 'oak_forest' or biome == 'redwood_forest' then
                             groundType = blocks.grass_forest
+                            belowGroundType = blocks.dirt
+                        elseif biome == 'spruce_forest' then
+                            groundType = blocks.grass_snowy
                             belowGroundType = blocks.dirt
                         elseif biome == 'desert' then
                             groundType = blocks.sand
@@ -186,6 +176,7 @@ if not completedMap then
     print("World generation done")
     
     -- ship
+    local n
     local shipMinY = grassY+8
     local shipMaxY = grassY+16
     n = shipMinY
@@ -271,10 +262,25 @@ if not completedMap then
         if math.random(0,1) == 0 then map:SetBlockAt(1*X, shipMaxY, 6*Z, blocks.tin, north) end
         if math.random(0,1) == 0 then map:SetBlockAt(0*X, shipMaxY, 6*Z, blocks.tin, north) end
     end end
-    print("Ship generation done")
+    end
+    
+    -- loaded blocks
+    for data,id in pairs(placedBlocks) do
+        local coords = split(data, '/')
+        if id then map:SetBlockAt(coords[1], coords[2], coords[3], tonumber(id or 255), north) end
     end
     
     print("Map complete")
     completedMap = true
+    ingame = true
 end
+end
+
+function split(inputstr, sep)
+    if sep == nil then sep = "%s" end
+    local t = {}
+    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+        table.insert(t, str)
+    end
+    return t
 end

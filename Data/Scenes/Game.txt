@@ -1,0 +1,36 @@
+- Player
+  - PlayerContainer
+    - PlayerModel
+    - CameraPivot
+      - Camera
+        - GUI
+          - F3
+            - Version
+            - Coords
+          - Crosshair
+          - SavedText
+          - Hotbar
+            - SelectedBlock
+        - BlockPlacer
+        - PauseMenu
+          - PauseTitle
+          - ResumeButton
+            - ResumeButtonText
+          - SaveButton
+            - SaveButtonText
+          - QuitButton
+            - QuitButtonText
+        - SaveMenu
+          - SaveTitle
+          - World1Button
+            - World1ButtonText
+          - World2Button
+            - World2ButtonText
+          - World3Button
+            - World3ButtonText
+          - BackButton
+            - BackButtonText
+- Map
+  - BlockPreview
+  - Sky
+- Exit

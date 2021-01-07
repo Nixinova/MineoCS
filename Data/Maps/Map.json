@@ -1,0 +1,43 @@
+{
+    "tileset": "Blocks",
+    "sheet_size": [512, 512],
+    "tile_size": 32,
+    "blocks": {
+        "$default": {
+            "shape": "Cube",
+            "unwrap_mode": "Collapsed",
+            "orientation": 0
+        },
+        "9": {
+            "$name": "grass_plains",
+            "unwrap_mode": "Custom",
+            "mapping": [[10, 2], [1, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2]]
+        },
+        "10": {
+            "$name": "grass_forest",
+            "unwrap_mode": "Custom",
+            "mapping": [[11, 2], [1, 2], [3, 2], [3, 2], [3, 2], [3, 2], [3, 2]]
+        },
+        "11": {
+            "$name": "grass_snowy",
+            "unwrap_mode": "Custom",
+            "mapping": [[12, 2], [1, 2], [4, 2], [4, 2], [4, 2], [4, 2], [4, 2]]
+        },
+        "16": {
+            "$name": "log_oak",
+            "unwrap_mode": "Custom",
+            "mapping": [[9, 3], [9, 3], [1, 3], [1, 3], [1, 3], [1, 3], [1, 3]]
+        },
+        "17": {
+            "$name": "log_redwood",
+            "unwrap_mode": "Custom",
+            "mapping": [[10, 3], [10, 3], [2, 3], [2, 3], [2, 3], [2, 3], [2, 3]]
+        },
+        "18": {
+            "$name": "log_spruce",
+            "unwrap_mode": "Custom",
+            "mapping": [[11, 3], [11, 3], [3, 3], [3, 3], [3, 3], [3, 3], [3, 3]]
+        }
+    },
+    "$mapping_order": ["top", "bottom", "left", "right", "back", "front"]
+}
